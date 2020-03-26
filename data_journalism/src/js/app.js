@@ -1,6 +1,6 @@
 // @TODO: YOUR CODE HERE!
 
-d3.csv('/data_journalism/src/data/data.csv').then((data)=>{
+d3.csv('./data_journalism/src/data/data.csv').then((data)=>{
     console.log(data);
 
     var smokes = data.map(d => Number(d.smokes));
