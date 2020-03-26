@@ -9,26 +9,19 @@ d3.csv('./data_journalism/src/data/data.csv').then((data)=>{
     var abbrs = data.map(d => d.abbr);
 
 
-    console.log(states)
-
-    // console.log(age)
-
-
     var svgWidth = 960;
     var svgHeight = 500;
 
     var margin = {
-        top: 100,
-        right: 10,
+        top: -10,
+        right: -430,
         bottom: 100,
-        left: 50
+        left: 130
     };
 
     var chartHeight = svgHeight - margin.top - margin.bottom; //
     var chartWidth = svgHeight - margin.left - margin.right; //
 
-    // append svg to page
-    // console.log(chartHeight,chartWidth)
 
     var svg = d3
     .select("#svg-area")
@@ -41,14 +34,12 @@ d3.csv('./data_journalism/src/data/data.csv').then((data)=>{
 
 
 
+    
     // scales
-
     var yScale = d3.scaleLinear()
     .domain([d3.min(age), d3.max(age)])
     .range([chartHeight, d3.min(age)]) //
     .nice();  
-
-
 
     var xScale = d3.scaleLinear()
     .domain([d3.min(smokes),d3.max(smokes)]) // try extent?
@@ -58,7 +49,6 @@ d3.csv('./data_journalism/src/data/data.csv').then((data)=>{
 
 
     // axes
-
     var yAxis = d3.axisLeft(yScale);
     var xAxis = d3.axisBottom(xScale);
 
@@ -77,44 +67,55 @@ d3.csv('./data_journalism/src/data/data.csv').then((data)=>{
     .append('circle')
     .attr('cx',function(d){return xScale(Number(d.smokes))})
     .attr('cy',function(d){return yScale(Number(d.age))})
-    .attr('r', 10)
-    .attr('opacity',.75)
+    .attr('r', 13)
+    .attr('opacity',.6)
     .style('fill','red');
 
-    // add text to circles
-    /* Define the data for the circles */
-  
 
+    // add text to circles
+    var textGroup = chartGroup.append('g')
+    .selectAll('text')
+    .data(data)
+    .enter()
+    .append('text')
+    .attr('x',d=> xScale(d.smokes))
+    .attr('y',d=> yScale(d.age))
+    .text(d => d.abbr)
+    .attr("font-size", "13px")
+    .attr("stroke", "#333")
+    .attr("text-anchor", "middle")
+    .attr("fill", "#333")
+    .attr('margin-top','10px');
 
 
 
     // Add axes labels
-    var xText = svg.append('text').attr('transform','translate(320, 450)').text("Smokes");
-    // var yText = svg.append('text').attr('transform','translate(200, 450)').text('Age')
-    var yText = svg.append('text').text('Age').attr('transform','translate(20,300)').text('Age');
+    var xText = svg.append('text')
+    .text("Smokes(%)")
+    .attr('transform','translate(450, 465)')
+    .attr('font-size','40px');
+    
+    var yText = svg.append('text')
+    .text('Age')
+    .attr('transform','translate(10,220)')
+    .attr('font-size','40px');
 
 
     // Tool Tip
     var toolTip = d3.tip()
       .attr("class", "tooltip")
       .attr('backgroun','black')
-      .offset([20, -20])
+      .offset([0, -20])
       .html(function(d) {
         return (`State: ${d.state}<br>Smokes: ${d.smokes}%<br>Median Age: ${d.age}`);
       });
 
     chartGroup.call(toolTip);
 
-    circlesGroup.on('mouseover',(data)=>{
+    circlesGroup.on('click',(data)=>{
         toolTip.show(data, this);
-    })
-    .on('mouseout',(data,index)=>{
-        toolTip.hide(data)
-    })
+    });
 
-    // circlesGroup.on('mouseout',(data,index)=>{
-    //     toolTip.hide(data,index)
-    // })
 
     
 

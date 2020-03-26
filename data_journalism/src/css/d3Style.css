@@ -52,6 +52,14 @@
   border-radius: 4px;
 }
 
+.tooltip{
+  background: #333;
+  opacity: .75;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
 /* Mobile Rules */
 @media screen and (max-width: 530px) {
   .stateText {
