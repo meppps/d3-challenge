@@ -1,6 +1,6 @@
 // @TODO: YOUR CODE HERE!
 
-d3.csv('src/data/data.csv').then((data)=>{
+d3.csv('/data_journalism/src/data/data.csv').then((data)=>{
     console.log(data);
 
     var smokes = data.map(d => Number(d.smokes));
@@ -21,7 +21,7 @@ d3.csv('src/data/data.csv').then((data)=>{
         top: 100,
         right: 10,
         bottom: 100,
-        left: 90
+        left: 50
     };
 
     var chartHeight = svgHeight - margin.top - margin.bottom; //
@@ -77,12 +77,13 @@ d3.csv('src/data/data.csv').then((data)=>{
     .append('circle')
     .attr('cx',function(d){return xScale(Number(d.smokes))})
     .attr('cy',function(d){return yScale(Number(d.age))})
-    .attr('r', 7)
+    .attr('r', 10)
     .attr('opacity',.75)
     .style('fill','red');
 
     // add text to circles
-
+    /* Define the data for the circles */
+  
 
 
 
@@ -104,13 +105,18 @@ d3.csv('src/data/data.csv').then((data)=>{
 
     chartGroup.call(toolTip);
 
-    circlesGroup.on('click',(data)=>{
+    circlesGroup.on('mouseover',(data)=>{
         toolTip.show(data, this);
+    })
+    .on('mouseout',(data,index)=>{
+        toolTip.hide(data)
     })
 
     // circlesGroup.on('mouseout',(data,index)=>{
     //     toolTip.hide(data,index)
     // })
+
+    
 
 
 
