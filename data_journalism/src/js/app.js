@@ -8,20 +8,22 @@ d3.csv('src/data/data.csv').then((data)=>{
 
     // console.log(age)
 
+
     var svgWidth = 960;
     var svgHeight = 500;
 
     var margin = {
         top: 50,
-        right: 30,
-        bottom: 100,
+        right: 10,
+        bottom: 20,
         left: 100
     };
 
-    // var chartHeight = svgHeight = margin.top - margin.bottom; //
-    // var chartWidth = svgHeight = margin.left - margin.right; //
+    var chartHeight = svgHeight - margin.top - margin.bottom; //
+    var chartWidth = svgHeight - margin.left - margin.right; //
 
     // append svg to page
+    console.log(chartHeight,chartWidth)
 
     var svg = d3
     .select("#svg-area")
@@ -30,21 +32,29 @@ d3.csv('src/data/data.csv').then((data)=>{
     .attr("height", svgHeight);
 
     var chartGroup = svg.append("g")
-    // .attr('transform',`translate(${margin.left},${margin.top})`) //
+    .attr('transform',`translate(${margin.left},${margin.top})`) //
 
-    // add x axis
+
+
+    // scales
 
     var yScale = d3.scaleLinear()
     .domain([0, d3.max(age)])
-    .range([svgHeight, 0]) //
+    .range([chartHeight, 0]) //
     .nice();  
+
+
 
     var xScale = d3.scaleLinear()
     .domain([0,d3.max(smokes)]) // try extent?
-    .range([0,svgWidth])
+    .range([0,chartWidth])
     .nice(); // chart svg w
 
-    
+
+
+
+    // axes
+
     var yAxis = d3.axisLeft(yScale);
     var xAxis = d3.axisBottom(xScale);
 
