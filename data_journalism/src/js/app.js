@@ -5,6 +5,11 @@ d3.csv('src/data/data.csv').then((data)=>{
 
     var smokes = data.map(d => Number(d.smokes));
     var age = data.map(d => Number(d.age));
+    var states = data.map(d => d.state);
+    var abbrs = data.map(d => d.abbr);
+
+
+    console.log(states)
 
     // console.log(age)
 
@@ -13,17 +18,17 @@ d3.csv('src/data/data.csv').then((data)=>{
     var svgHeight = 500;
 
     var margin = {
-        top: 50,
+        top: 100,
         right: 10,
-        bottom: 20,
-        left: 100
+        bottom: 100,
+        left: 90
     };
 
     var chartHeight = svgHeight - margin.top - margin.bottom; //
     var chartWidth = svgHeight - margin.left - margin.right; //
 
     // append svg to page
-    console.log(chartHeight,chartWidth)
+    // console.log(chartHeight,chartWidth)
 
     var svg = d3
     .select("#svg-area")
@@ -39,17 +44,16 @@ d3.csv('src/data/data.csv').then((data)=>{
     // scales
 
     var yScale = d3.scaleLinear()
-    .domain([0, d3.max(age)])
-    .range([chartHeight, 0]) //
+    .domain([d3.min(age), d3.max(age)])
+    .range([chartHeight, d3.min(age)]) //
     .nice();  
 
 
 
     var xScale = d3.scaleLinear()
-    .domain([0,d3.max(smokes)]) // try extent?
-    .range([0,chartWidth])
+    .domain([d3.min(smokes),d3.max(smokes)]) // try extent?
+    .range([d3.min(smokes),chartWidth])
     .nice(); // chart svg w
-
 
 
 
@@ -63,15 +67,52 @@ d3.csv('src/data/data.csv').then((data)=>{
 
     chartGroup.append('g')
     .call(xAxis)
+    .attr("transform", `translate(0, ${chartHeight})`)
+    .call(xAxis);
 
-    chartGroup.selectAll('circle')
+
+    var circlesGroup = chartGroup.selectAll('circle')
     .data(data)
     .enter()
     .append('circle')
     .attr('cx',function(d){return xScale(Number(d.smokes))})
     .attr('cy',function(d){return yScale(Number(d.age))})
-    .attr('r',5)
-    .style('fill','red')
+    .attr('r', 7)
+    .attr('opacity',.75)
+    .style('fill','red');
+
+    // add text to circles
+
+
+
+
+
+    // Add axes labels
+    var xText = svg.append('text').attr('transform','translate(320, 450)').text("Smokes");
+    // var yText = svg.append('text').attr('transform','translate(200, 450)').text('Age')
+    var yText = svg.append('text').text('Age').attr('transform','translate(20,300)').text('Age');
+
+
+    // Tool Tip
+    var toolTip = d3.tip()
+      .attr("class", "tooltip")
+      .attr('backgroun','black')
+      .offset([20, -20])
+      .html(function(d) {
+        return (`State: ${d.state}<br>Smokes: ${d.smokes}%<br>Median Age: ${d.age}`);
+      });
+
+    chartGroup.call(toolTip);
+
+    circlesGroup.on('click',(data)=>{
+        toolTip.show(data, this);
+    })
+
+    // circlesGroup.on('mouseout',(data,index)=>{
+    //     toolTip.hide(data,index)
+    // })
+
+
 
 
 });
